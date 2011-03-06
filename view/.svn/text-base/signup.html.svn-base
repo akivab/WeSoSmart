@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+    <head>
+    {% include "scripts.html" %}
+    </head>
+    <body>
+        <div id="formp">Signup</div>
+        <form id="smallform" method="post" action="/signup">
+            <label for="user_name">Name:
+            <input tabindex=1 name="user[name]" type="text" id="user_name" maxlength="64" />
+            <small>Please enter your full name</small></label>
+
+            <label for="user_email">UNI or Columbia email:
+            <input tabindex=2 name="user[email]" type="text" id="user_email" maxlength="64" />
+            <small class="error" id="bademail" style="color:gray;">Find yours <a target="_blank" href="http://uni.columbia.edu/">here</a>. 
+                This address will be verified.</small></label>
+  
+	        <label for="user_password">Password:
+	        <input tabindex=3 name="user[password]" type="password" id="user_password" maxlength="32" /> 
+	        <small>Use 6 or more characters. Use something other than your Columbia password!</small></label> 
+            <input 
+            type="submit" 
+            name="button"
+            tabindex=4
+            id="submitsignup" 
+            value="Sign up" /> 
+            <input type="submit" id="cancel" onClick="parent.tb_remove(); return false;" value="Cancel" /> 
+	    </form>
+	</body> 
+</html>
+    

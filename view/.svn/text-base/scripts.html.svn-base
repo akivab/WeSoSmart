@@ -1,0 +1,8 @@
+        <title>{% if title %} WeSoSmart - {{ title }} {% else %} WeSoSmart {% endif %} </title>
+        <link rel="stylesheet" type="text/css" href="/css/booksite.css">
+        <link rel="stylesheet" href="/css/thickbox.css" type="text/css" media="screen" />
+		<script src="http://www.google.com/jsapi?key=ABQIAAAAblynFX_DG3mIRtY3xVjQphQ9TVCSx0dWPlPvgmIvA382X8MrcRQuWRbfT_Sj2NkDpttuvX83jVZ4zQ"
+		        type="text/javascript"></script>
+		<script type="text/javascript">google.load("jquery", "1.4.2");</script>
+        <script type="text/javascript" src="/scripts/thickbox-compressed.js"></script>
+		<script type="text/javascript" src="/scripts/courseselection.js"></script>

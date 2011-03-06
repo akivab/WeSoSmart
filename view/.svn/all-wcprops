@@ -1,0 +1,131 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/!svn/ver/2/trunk/booksite/src/view
+END
+find_books.html
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/5/trunk/booksite/src/view/find_books.html
+END
+user_main.html
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/5/trunk/booksite/src/view/user_main.html
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/2/trunk/booksite/src/view/__init__.py
+END
+under_construction
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/5/trunk/booksite/src/view/under_construction
+END
+scripts.html
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/!svn/ver/5/trunk/booksite/src/view/scripts.html
+END
+under_construction.html
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/!svn/ver/5/trunk/booksite/src/view/under_construction.html
+END
+header.html
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/5/trunk/booksite/src/view/header.html
+END
+error.html
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/5/trunk/booksite/src/view/error.html
+END
+subject_page.html
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/5/trunk/booksite/src/view/subject_page.html
+END
+settings
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/5/trunk/booksite/src/view/settings
+END
+footer.html
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/5/trunk/booksite/src/view/footer.html
+END
+book_main.html
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/5/trunk/booksite/src/view/book_main.html
+END
+settings.html
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/5/trunk/booksite/src/view/settings.html
+END
+verify.html
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/5/trunk/booksite/src/view/verify.html
+END
+signup.html
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/5/trunk/booksite/src/view/signup.html
+END
+messages.html
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/5/trunk/booksite/src/view/messages.html
+END
+import_books.html
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/5/trunk/booksite/src/view/import_books.html
+END
+index.html
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/5/trunk/booksite/src/view/index.html
+END
+login.html
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/!svn/ver/5/trunk/booksite/src/view/login.html
+END
+complete.html
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/!svn/ver/5/trunk/booksite/src/view/complete.html
+END
+class_main.html
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/5/trunk/booksite/src/view/class_main.html
+END

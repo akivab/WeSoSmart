@@ -1,0 +1,45 @@
+<div class="top_main">
+    <div id="top_main_image">
+        {% if profile %}<a style='font-size: 12pt; text-align:center' class='thickbox' href='/settings?KeepThis=true&TB_iframe=true&height=300&width=475'>{% endif %}
+        <img id="main_image" src="{{picture}}" />
+        {% if profile %}<br />change pic</a>{% endif %}
+    </div>
+    <div id="top_main_description">
+        <h3>{% ifequal 2 description.level %} Professor {% else %} Student {% endifequal %}</h3>
+        <h4><a href='mailto:{{description.cubmail}}'>{{description.cubmail}}</a></h4>
+    </div>
+    {% if profile %}
+    <div id="top_main_stats">
+        Awards
+        <div class='award'>
+            <table><tr><td><img src='/img/newb.png'></td></tr>
+                   <tr><td>New member</td></tr></table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<div class="lower_main">
+    <div class="lower_main_action">
+        <div id="middle_main_activity">
+            <div id="classes">
+            {% for i in user_class_list %}
+                {% ifequal 1 forloop.counter %}<h3>classes:</h3>{%endifequal%}
+                <a href='/class/{{i.section_id.key}}' class="main_action_item">{{i.section_id.class_id.name}}</a>
+            {% endfor %}
+            </div>{%if user_book_list %}
+            <div id="books_wanted"><h3>books wanted:</h3>
+            {% for i in user_book_list %}
+                {% ifequal 0 i.status %}
+                <a href='/book/{{i.book_id.key}}' class="main_action_item">{{i.book_id.title}}</a>
+                {% endifequal %}
+            {% endfor %}
+            </div>
+
+            <div id="books_had"><h3>books had:</h3>
+            {% for i in user_book_list %}
+                {% ifequal 1 i.status %}
+                <a href='/book/{{i.book_id.key}}' class="main_action_item">{{i.book_id.title}}</a>
+                {% endifequal %}
+            {% endfor %}
+            </div>{%endif%}
+        </div>

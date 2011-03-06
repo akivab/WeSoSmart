@@ -1,0 +1,89 @@
+<div class="top_main">
+    <div id="top_main_image">
+        {% if profile %}<a style='font-size: 12pt; text-align:center' class='thickbox' href='/settings?KeepThis=true&TB_iframe=true&height=300&width=475'>{% endif %}
+        <img id="main_image" src="{{picture}}" />
+        {% if profile %}<br />change pic</a>{% endif %}
+    </div>
+    <div id="top_main_description">
+        <h3>{% ifequal 2 description.level %} Professor {% else %} Student {% endifequal %}</h3>
+        <h4><a href='mailto:{{description.cubmail}}'>{{description.cubmail}}</a></h4>
+        <h4><a class='thickbox' href='/sendmessage?id={{description.key}}&KeepThis=true&TB_iframe=true&height=450&width=375'>Send a message!</a></h4>
+        <h4><a onclick="$(this).css('font-size', '10px'); var link='http://www.wesosmart.com/user/{{description.key}}'; $(this).html(link);" href="javascript:void(0);">Permalink</a></h4>
+    </div>
+    {% if newb or pro %}
+    <div id="top_main_stats">
+        <h3>Awards</h3>
+        <div class='award'>
+            <img title="you {%if pro%}we{%else%}a{%endif%}re a newbie" src='/img/newb.png'>
+            <h4>New member</h4>
+        </div>
+
+        <div {% if not pro %} style='opacity:.2' {%endif%} class='award'>
+            <img {%if pro%} title="you're a pro, bro!" {% else %} title="you are not yet a pro. do more!" {%endif%} src='/img/pro.png'>
+            <h4>Pro member</h4>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<div class="lower_main">
+    <div class="lower_main_action">
+        <div id="middle_main_activity">
+            <a class="tab" alt="Check out more <a href='/find'>here</a>"
+                href="javascript:void(0);" onclick="change_tab($('#classes'),$(this));">classes</a>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#books_wanted'),$(this));">books i want</a>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#books_had'),$(this));">books i have</a>
+            <div id="tab_data"></div>
+            <div class="tab_data" id="classes">
+            {% for i in user_class_list %}
+                <div class="main_action_item profileitem"><a href='/class/{{i.section_id.key}}' >{{i.section_id.class_id.name}}</a> (<div class='semesterid'>{{i.section_id.semester}}</div>)
+                {%if profile%}<a class="removeitem c{{forloop.counter}}" href="javascript: void(0)"; onclick="removeobj('{{i.key}}',$(this))">remove</a>{%endif%}
+                </div>
+            {% endfor %}
+            </div>{%if book_want_list%}
+            <div class="tab_data" id="books_wanted">
+            {% for i in book_want_list %}
+                <div class='profileitem'>
+                <a href='/book/{{i.book_id.key}}' class="main_action_item">{{i.book_id.title}}</a>
+                {% if profile %}
+                <div style='display:inline; margin-right: 10px;'>your offer:</div>
+                <select class='price_want' id="selectwant{{i.key}}" onchange='price_change($(this),"want")' key="{{i.key}}" price="{{i.book_id.price}}">
+                <option>{%if i.price %}{{ i.price }}{%else %}not set{%endif%}</option>
+                </select>
+                <a class="removeitem w{{forloop.counter}}" href="javascript: void(0)"; onclick="removeobj('{{i.key}}',$(this))">remove</a>
+                <form class='typeinprice' onsubmit='price_change_text($("#textwant{{i.key}}&KeepThis=true&TB_iframe=true&height=450&width=475"), $("#selectwant{{i.key}}"), "want"); return false;'>  
+                    <a onclick='show_this($(this))' href='javascript: void(0);'>or type it in</a> <input type='text' id='textwant{{i.key}}' key="{{i.key}}" price="{{i.book_id.price}}" value="{{i.price}}" />
+                    <input type='submit' />
+                </form>
+                {% else %}
+                    {%if i.price %} offering {{i.price}}
+                    {% endif %}
+                {% endif %}
+                </div>
+            {% endfor %}
+            </div>{%endif%}
+
+            {%if book_have_list%}
+            <div class="tab_data" id="books_had">
+            {% for i in book_have_list %}
+                <div class='profileitem'>
+                <a href='/book/{{i.book_id.key}}' class="main_action_item">{{i.book_id.title}}</a>
+                {% if profile %}
+                <div style='display:inline; margin-right: 10px;'>your price:</div>
+                <select id='select{{i.key}}' class='price_have' onchange='price_change($(this),"have")' key="{{i.key}}" price="{{i.book_id.price}}">
+                <option>{%if i.price %}{{ i.price }}{%else %}not set{%endif%}</option>
+                </select>
+                <a class="removeitem h{{forloop.counter}}" href="javascript: void(0)"; onclick="removeobj('{{i.key}}',$(this))">remove</a>
+                <form class='typeinprice'  onsubmit='price_change_text($("#text{{i.key}}"), $("#select{{i.key}}"), "have"); return false;'>
+                    <a onclick='show_this($(this))' href='javascript: void(0);'>or type it in</a> <input type='text' id='text{{i.key}}' key="{{i.key}}" price="{{i.book_id.price}}" value="{{i.price}}" />
+                    <input type='submit' />
+                </form>
+                {% else %}
+                    {%if i.price %} for {{i.price}}
+                    {% endif %}
+                {% endif %}
+                </div>
+            {% endfor %}
+            </div>{% endif %}
+        </div>

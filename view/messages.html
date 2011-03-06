@@ -1,0 +1,32 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+
+        <!-- div main -->
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+            <div class="description">{{title}}</div>
+            {{length}} messages.
+            {% for match in messages %}
+            <div class='message'> <a target='_blank' href='/user/{{match.userbook_id.user_id.key}}'>{{match.userbook_id.user_id.name}}</a>
+                    {% ifequal match.level 1 %}                    
+                    {{match.message}}
+                    {%else%}
+                    {% ifequal match.userbook_id.status 0 %} wants {% else %} has {% endifequal %}
+                    <a href='/book/{{match.userbook_id.book_id.key}}'>{{match.userbook_id.book_id.title}}</a>
+                    {% if match.userbook_id.price %} for {{match.userbook_id.price}} -- list price: ${{match.userbook_id.book_id.price}}{% endif %}
+                    <a class='thickbox sendmessage' href='/sendmessage?id={{match.userbook_id.user_id.key}}&KeepThis=true&TB_iframe=true&height=450&width=375'>send message</a>
+                    {% endifequal %}
+            </div>
+            {% endfor %}
+            </div>
+       </div>
+       {% include "footer.html" %}
+    </body>
+</html>
+

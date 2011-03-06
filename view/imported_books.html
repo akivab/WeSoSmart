@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        <title>Imported Books</title>
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+            <div class="description">Your Courses and Books<p>(<a href="/import">update for another schedule!</a>)</p></div>
+                    {% if not signed_in %}
+                    <h3>Sign in to save classes to your schedule. Make your own schedule <a href="/find">here</a></h3>
+                    {%endif%}
+            <div class="lower_main">
+                <div class="lower_main_action">
+                    <div id="middle_main_activity">
+                    <h3>Your classes</h3>
+                    <div class='importedclasses'>
+                    {% for section in sections %}
+                        <div class='importclass' <h4><a target='_blank' href='/class/{{section.key}}'>{{section.class_id.name}} ({{section.section}})</a></h4>
+                        {% if signed_in %}
+                        <a class='thickbox enroll' onclick='enroll($(this))' href='/enroll?class={{section.key}}'>Enroll</a></div>  
+                        {% else %}<a class='enroll' href='javascript: void(0);' onclick="$(this).css('color','red'); $(this).html('Sign in!');">Enroll</a></div>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                    <h3>Books for all sections of your classes</h3>
+                    {% for myclass in classes %}
+                    <script>get_book_code_late($("#middle_main_activity"), '{{myclass.key}}')</script>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        <div class="lower_main_recommendations">
+            <h3>Recent comments</h3>
+                    {%if signed_in %}
+                    {% for i in recent_comments %}
+                       <div class="recommendations_item">
+                        <a target='_blank' href='/user/{{i.user_id.key}}'>{{i.user_id.name}}</a> commented on <a target='_blank' href='/{{i.subject_type}}/{{i.subject_id.key}}'>{{i.subject_id.name}}</a> saying: <div class='someone_comment'>{{i.comment}}</div>
+                       </div>
+                    {% endfor %}
+                    {%else%}<div style='color:red'>Sign in to see comments</div>{%endif%}
+
+        </div>
+
+        </div>
+      <div>
+</div>

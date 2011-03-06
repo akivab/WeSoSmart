@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+    <head>
+    {% include "scripts.html" %}
+    </head>
+    <body>
+        <div id="formp">Verify User</div>
+        <form id="smallform" method="post" onSubmit="/verify">
+
+            <label for="user_verification">Verification Code:
+            <input tabindex=1 name="user[verify]" type="text" id="user_verify" maxlength="64" /><small>&nbsp;</small></label>
+            {% if not user_key %}
+            <label for="user_email">UNI or cubmail address:
+            <input tabindex=1 name="user[email]" type="text" id="user_email" maxlength="64" /><small>&nbsp;</small></label>
+  
+	        <label for="user_password">Password:
+	        <input tabindex=2 name="user[password]" type="password" id="user_password" maxlength="32" /><small>&nbsp;</small></label>
+            {% else %}
+            <input type="hidden" name="user[key]" value="{{user_key}}" />
+            {% endif %}
+            <input
+            type="submit" 
+            name="button" 
+            tabindex=3
+            id="submitlogin" 
+            value="Login" /> 
+           <input type="submit" id="cancel" value="Cancel" onClick="parent.tb_remove(); return false;" /> 
+	    </form>
+        {% if verify_again %}<a href="{{verify_again}}">Send verification email again</a>{% endif %}
+	</body> 
+</html>
+    

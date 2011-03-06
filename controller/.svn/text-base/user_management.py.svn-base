@@ -1,0 +1,272 @@
+import cgi
+import os
+import fix_path
+import hashlib
+import random
+import re
+ 
+from exceptions import VerificationNeededException
+from exceptions import BadUserException
+from exceptions import UnregisteredException
+from time import time
+from cookies import Cookies
+from send_email import SendEmail
+from model.model import User
+from model.model import Sessions
+
+from google.appengine.ext import db
+from google.appengine.ext import webapp
+from google.appengine.ext.db import Key
+from google.appengine.ext.webapp import template
+from google.appengine.ext.webapp.util import run_wsgi_app
+
+class UserManagement(webapp.RequestHandler):
+    def __init__(self, handler=None):
+        self.hashid = '_utmh'
+        if(handler):
+            self.cookies = Cookies(handler, max_age=180)
+            self.request = handler.request
+            
+    def killit(self):
+        if self.getUserByCubmail("ab2928@columbia.edu"):
+            user = self.getUserByCubmail("ab2928@columbia.edu")
+            s = Sessions.gql("WHERE user=:1", user)
+            for i in s:
+                db.delete(i)
+            db.delete(user);
+            
+    def get(self):
+        #self.killit()
+        self.cookies = Cookies(self,max_age=180)
+        self.render_template(None, '../view/footer.html')
+        self.render_template(None, '../view/header.html')
+        self.render_template(None, '../view/scripts.html')
+        template_values = None
+        page = "../view/"
+        try:
+            if(re.match('/login',self.request.path)):
+                page += "login.html"
+                self.response.out.write(self.render_template(template_values, page))
+            elif(re.match('/signup',self.request.path)):
+                page += "signup.html"
+                self.response.out.write(self.render_template(template_values, page))
+            elif(re.match('/logout',self.request.path)):
+                self.logout()
+                self.redirect('/')
+            elif(re.match('/act_test',self.request.path)):
+                self.test()
+            elif(re.match('/verify/([^/]+)/([^/]+)/?',self.request.path)):
+                m = re.match('/verify/([^/]+)/([^/]+)/?',self.request.path)
+                self.verify(m.group(1), m.group(2))
+                self.redirect('/complete')
+            elif(re.match('/verify/([^/]+)/?',self.request.path)):
+                m = re.match('/verify/([^/]+)/?',self.request.path)
+                page += "verify.html"
+                template_values = {'user_key': m.group(1), 'verify_again': self.request.path.replace("verify","verify_again")}
+                self.response.out.write(self.render_template(template_values, page))
+            elif(re.match('/verify_again/([^/]+)/?',self.request.path)):
+                m = re.match('/verify_again/([^/]+)/?',self.request.path)
+                user = User.get(Key(m.group(1)))
+                SendEmail().sendVerificationEmail(user, self.getUserHash(user))
+                self.redirect('/complete')
+            elif(re.match('/verify', self.request.path)):
+                page += "verify.html"
+                self.response.out.write(self.render_template(template_values, page))
+        except Exception, e:
+            self.redirect('/error?type='+str(e))
+
+    def post(self):
+        self.cookies = Cookies(self,max_age=86400)
+        name = self.request.get("user[name]")
+        ip = self.request.remote_addr
+        email = self.request.get("user[email]")
+        password = self.request.get("user[password]")
+        verify = self.request.get("user[verify]")
+        key = self.request.get("user[key]")
+        try:
+            if(re.match('/login',self.request.path)):
+                try:
+                    self.login(email,password,ip)
+                    self.redirect('/complete')
+                except VerificationNeededException,e:
+                    self.redirect('/verify/'+str(e).replace("'",""))
+            elif(re.match('/signup',self.request.path)):
+                self.signup(name,email,password)
+                self.redirect('/complete')
+            elif(re.match('/verify',self.request.path)):
+                if password:
+                    self.verify(email, password, verify)
+                else:
+                    self.verify(key, verify)
+                self.redirect('/complete')
+        except Exception, e:
+            self.redirect('/error?type='+str(e).replace("'",""))
+            
+    def render_template(self, template_vals, file):
+        path = os.path.join(os.path.dirname(__file__), file)
+        return template.render(path, template_vals)
+    
+    
+    # now for the meat
+    def signup(self, name, cubmail, password):
+        if not (name and cubmail and password):
+            raise BadUserException('No info provided')
+        user = self.getUserByCubmail(cubmail)
+        if user:
+            raise BadUserException('User already signed up.')
+        return self.addNewUser(name, cubmail, password)
+    
+    def isLoggedIn(self):
+        try:
+            self.getUser()
+        except Exception:
+            return False
+        return True
+    
+    def logout(self):
+        if not self.isLoggedIn():
+            return
+        self.removeSessions(self.cookies[self.hashid])
+        del self.cookies[self.hashid] #Delete a cookie from pending request and client browser
+    
+    def login(self, cubmail, password, ip):
+        user = self.getUserByCubmail(cubmail)
+        passw = self.getEncryptedPass(cubmail, password)
+        
+        if user and passw == user.password:
+            if user.level == 0:
+                raise VerificationNeededException(str(user.key()))
+            hash = self.getHash()
+            self.addSessionUser(ip, hash, user)
+            self.cookies[self.hashid] = hash
+        elif user:
+            raise BadUserException('Wrong password.')
+        else:
+            raise UnregisteredException('Not registered')
+    
+    def verifyEmail(self, cubmail, password, hash):
+        user = self.getUserByCubmail(cubmail)
+        passw = self.getEncryptedPass(cubmail, password)
+        if user and passw == user.password:
+            self.verify(user.key(), hash)
+        
+    def verify(self, user_key, hash, i=None):
+        if i:
+            return verifyEmail(user_key, hash, i)
+        user = db.get(Key(user_key))
+        if not user:
+            raise BadUserException('Invalid user')
+        s = Sessions.gql("WHERE ip='verify' AND hash=:1 AND user=:2",hash,user).get()
+        if s:
+            user.level = 1
+            user.put()
+            self.addSessionUser(self.request.remote_addr, hash, user)
+            self.cookies[self.hashid] = hash
+            db.delete(s)
+        else:
+            raise BadUserException('No session found for this user.')
+            
+    
+    def getHash(self):
+        m = hashlib.md5()
+        n = str(random.random())
+        m.update(n)
+        return m.hexdigest()
+    
+    def addNewUser(self, name, cubmail, password):
+        hash = self.getHash()
+        user = self.addUser(name, db.Email(cubmail), self.getEncryptedPass(cubmail,password), hash)
+        SendEmail().sendVerificationEmail(user, hash)
+        return hash
+        
+    def addUser(self, name, cubmail, passw, verification):
+        user = User.gql("WHERE name=:1 AND cubmail=:2 AND password=:3", name, cubmail,passw).get()
+        if not user:
+            user = User(name = name, cubmail=cubmail, password = passw, level=0)
+            user.put()
+            self.addSessionUser('verify', verification, user)
+        return user
+    
+    def removeUser(self, name, cubmail, passw):
+        user = User.gql("WHERE name = :1 AND cubmail=:2 AND password=:3",name,cubmail,passw).get()
+        if user:
+            for i in Sessions.gql("WHERE user = :1",user):
+                db.delete(i)
+            db.delete(user)
+    
+    def removeSessions(self, hash):
+        s = Sessions.gql("WHERE hash=:1",hash).get()
+        if s:
+            u = s.user
+            s = Sessions.gql("WHERE user=:1",u)
+            db.delete(s)
+        
+    def getUserByCubmail(self, cubmail):
+        return User.gql("WHERE cubmail=:1", cubmail).get()
+    
+    def getUserHash(self, user):
+        if not user:
+            raise BadUserException("User not found.")
+        session = Sessions.gql("WHERE ip='verify' AND user=:1",user).get()
+        if session:
+            return session.hash
+        else:
+            raise BadUserException("User not found.")
+
+        
+    def getEncryptedPass(self, cubmail, password):
+        m = hashlib.sha256()
+        m.update(cubmail)
+        m.update(password)
+        return m.hexdigest()
+    
+    
+    def addSessionUser(self, ip, hash, user):
+        session = Sessions()
+        session.ip = ip
+        session.hash = hash
+        session.user = user
+        session.put()
+        return session
+    
+    def getUser(self):
+        if not self.cookies[self.hashid]:
+            raise BadUserException("Not logged in")
+        ip = self.request.remote_addr
+        hash = self.cookies[self.hashid]
+        session = Sessions.gql("WHERE ip=:1 AND hash=:2",ip,hash).get()
+        if session:
+            return session.user
+    
+    def test(self):
+        hash = self.addNewUser("akiva", "ab2928@columbia.edu","12345")
+        passw = self.getEncryptedPass("ab2928@columbia.edu","12345");
+        self.response.out.write("<h3>added user</h3>")
+        i =  User.all().order('-time')[0]
+        self.response.out.write("<br />"+str(i.key()) +"," + i.name + ","+ i.cubmail+","+str(i.level))
+
+        self.response.out.write("<h3>verifying user</h3>")
+        self.verify(i,hash)
+        i =  User.all().order('-time')[0]
+        self.response.out.write("<br />"+str(i.key()) +"," + i.name + ","+ i.cubmail+","+str(i.level))
+
+        self.response.out.write("<h3>removing user</h3>")
+        self.removeUser("akiva","ab2928@columbia.edu",passw)
+        i =  User.all().order('-time')[0]
+        self.response.out.write("<h3>last added user</h3>")
+        self.response.out.write("<br />"+str(i.key()) +"," + i.name + ","+ i.cubmail+","+str(i.level))
+        
+apps_binding = []
+apps_binding.append(('/login', UserManagement))
+apps_binding.append(('/logout', UserManagement))
+apps_binding.append(('/signup', UserManagement))
+apps_binding.append(('/verify.*', UserManagement))
+
+application = webapp.WSGIApplication(apps_binding, debug=True)
+
+def main():
+    run_wsgi_app(application)
+
+if __name__ == "__main__":
+    main()
+        

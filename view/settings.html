@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+    <head>
+    {% include 'scripts.html' %}
+    </head>
+    <body>
+        <div id='formp'>Settings</div>
+        <form id='smallform' method='post' enctype="multipart/form-data"  action='/settings'>
+            <div id='smallformdata'>
+            <label for='user_picture'>Picture:
+            <input tabindex=1 name='user[picture]' type='file' id='user_picture' maxlength='64' /><small>&nbsp;</small></label>
+            </div>
+            <input
+            type='submit' 
+            name='button' 
+            tabindex=3
+            id='submitchanges' 
+            value='Apply changes' /> 
+           <input type='submit' id='cancel' value='Cancel' onClick='parent.tb_remove(); return false;' /> 
+	    </form>
+	</body> 
+</html>
+    

@@ -1,0 +1,47 @@
+<div class="top_main">
+    <div id="top_main_image">
+        <img id="main_image" src="{{picture}}" />
+    </div>
+    <div id="top_main_description">
+        <h3>{{description.author}}</h3>        
+        <h4>{{description.description}}</h4>
+        <h3><a href="javascript: void(0);" onclick="user_price_act($(this), 'want', '{{description.key}}','{{description.price}}')">i want it</a></h3>
+        <h3><a href="javascript: void(0);" onclick="user_price_act($(this), 'have', '{{description.key}}','{{description.price}}')">i have it</a></h3>
+    </div>
+</div>
+<div class="lower_main">
+    <div class="lower_main_action">
+        <div id="middle_main_activity">
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#information'),$(this));">information</a>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#wanted_by'),$(this));">wanted by ({{wantcount}})</a>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#had_by'),$(this));">had by ({{havecount}})</a>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#classes_for'),$(this));">classes for</a>
+            <div id="tab_data"></div>
+            <div class="tab_data" id="information">
+            Title: {{description.title}}<br />
+            Author: {{description.author}}<br />
+            Description: {{description.description}}<br />
+            ISBN: {{description.isbn}}<br />
+            Price: ${{description.price}}<br />
+            <a target='_blank' href='{{description.prev}}'>Preview it</a>
+            </div>
+            <div class="tab_data" id="classes_for">
+            {% for classbook in book_class_list %}
+            <a href="/class/{{classbook.section_id.key}}">{{classbook.section_id.class_id.name}}: {{classbook.section_id.section}}</a> ({{classbook.req}})<br />
+            {% endfor %}
+            </div>
+            <div class="tab_data" id="wanted_by">
+            {% for userbook in book_want_list %}
+            <a target='_blank' href="/user/{{userbook.user_id.key}}">{{userbook.user_id.name}}</a>{% if userbook.price %}, {{userbook.price}}{%endif%}<br />
+            {% endfor %}
+            </div>
+            <div class="tab_data"  id="had_by">
+            {% for userbook in book_have_list %}
+            <a target='_blank' href="/user/{{userbook.user_id.key}}">{{userbook.user_id.name}}</a>{% if userbook.price %}, {{userbook.price}}{%endif%}<br />
+            {% endfor %}
+            </div>
+        </div>

@@ -1,0 +1,17 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        <title>Recently Listed Books</title>
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+            {% for i in recent_activity %}
+                {{i}}
+            {% endfor %}
+      </div>
+    </body>
+</html>

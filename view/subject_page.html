@@ -1,0 +1,68 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+
+        <!-- div main -->
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+            <div class="description">{{title}}</div>
+            {% if is_user %} {% include "user_main.html" %} {% endif %}
+            {% if is_book %} {% include "book_main.html" %} {% endif %}
+            {% if is_class %} {% include "class_main.html" %} {% endif %}
+                    <div class="bottom_main">
+                         <div id="comments">
+                         <h3>Main Comments</h3>
+                         </div>
+                        {%for comment in comments%}
+                            <div class="comment_block" {%if comment.depth%} style="position: relative; margin-left: {{comment.depth}}em"{%endif%}>
+                            {%if comment.file%}<img class='comment_img' src='{{comment.file.link}}' />{%endif%}
+                            <div><a target='_blank' href='/user/{{comment.user_id.key}}'>{{comment.user_id.name}}</a>
+                            <p class="comment">{{comment.comment}}</p>
+                            </div>
+                            {% ifequal uk.key comment.user_id.key %}
+                            <a class='comment_delete' href='javascript:delete_comment("{{comment.key}}","{{uk.key}}")'>delete comment</a>
+                            <br />
+                            {% endifequal %}
+                            <a class='comment_reply' key={{comment.key}} href="#commentform">reply</a>
+                            </div>
+                        {% endfor %}
+                        <div>
+                        {% if signed_in %}
+                        <div style='margin-top: 10px; visibility: hidden' id='replying'>Reply away!</div>
+                        <form id='commentform' action='/comment' method='post'>
+                            <textarea id="commenttext" rows="5" cols="40" name='comment_text'></textarea>
+                            <input id="orig" name='orig' type='hidden' value='{{description.key}}' />
+                            <input id="subject" name='subject' type='hidden' value='{{description.key}}' />
+                            <input name='subject_type' type='hidden' value=
+                                '{%if is_user%}user{%else%}{%if is_book%}book{%else%}class{%endif%}{%endif%}'
+                            />
+                            <input type='submit' value='Comment' />
+                        </form>
+                        {% else %}
+                        Please sign in.
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="lower_main_recommendations">
+                    <h3>Recent comments</h3>
+                    {%if signed_in %}
+                    {% for i in recent_comments %}
+                       <div class="recommendations_item">
+                        <a target='_blank' href='/user/{{i.user_id.key}}'>{{i.user_id.name}}</a> commented on <a target='_blank' href='/{{i.subject_type}}/{{i.subject_id.key}}'>{{i.subject_id.name}}</a> saying: <div class='someone_comment'>{{i.comment}}</div>
+                       </div>
+                    {% endfor %}
+                    {%else%}<div style='color:red'>Sign in to see comments</div>{%endif%}
+                </div>
+            </div>
+        </div>
+
+        {% include "footer.html" %}
+    </body>
+</html>
+

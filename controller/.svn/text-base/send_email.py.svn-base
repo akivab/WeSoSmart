@@ -1,0 +1,31 @@
+'''
+Created on Jan 1, 2011
+
+@author: akiva
+'''
+
+from google.appengine.api import mail
+
+class SendEmail():
+    def sendVerificationEmail(self, user, hash):
+        email = "akiva.bamberger@gmail.com"
+        if not mail.is_email_valid(email):
+            # Return an error message...
+            raise Exception("Can't send email to " + email)
+        body_string =  """
+        Dear %s,
+        
+        Thank you for signing up with WeSoSmart! Please verify your account at %s/verify/%s/%s.
+        
+        If that's too much, just log in at WeSoSmart with this code: %s.
+        
+        If you have any questions, don't hesitate to ask!
+        
+        Best,
+        WeSoSmart!
+        """ % (user.name, "http://localhost:8080",str(user.key()), hash, hash)
+        
+        mail.send_mail(sender="WeSoSmart Support <support@wesosmart.com>",
+                      to=email,
+                      subject="Please verify your WeSoSmart account",
+                      body=body_string)

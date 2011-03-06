@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>{%include "scripts.html" %}</head>
+<script type='text/javascript'>
+function jumpout(){
+    s = parent;  parent.tb_remove(); if(s != this){s.location.reload(1);}
+}
+</script>
+
+<body>
+<div style='text-align: left; padding: 30px;'>
+{% if not reason %}
+ <div class="description" style="color:green">Success.</div>
+ {% if justsignedup %}<div style='color: gray;'>check your email!</div>{%else%}<script>setTimeout(jumpout(), 10);</script>{%endif%}
+{% else %}
+ <div class="description" style="color:red; ">Please try again.</div>
+ <div style="color: gray;">Reason: {{reason}}</div>
+{% endif %}
+</div>
+</body>

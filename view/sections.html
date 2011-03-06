@@ -1,0 +1,59 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+
+        <!-- div main -->
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+            <div class="description">{{title}}</div>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>"
+                href="javascript:void(0);" onclick="change_tab($('#classes'),$(this));">classes</a>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#books'),$(this));">books</a>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#professors'),$(this));">professors</a>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#classmates'),$(this));">classmates</a>
+
+            <div id="tab_data" style="text-align: left"></div>
+
+            <div class="tab_data" id = "classes">
+            {% for class in classes %}
+              <a class="main_action_item" href='/class/{{class.key}}'>{{class.class_id.name}}</a>
+            {% endfor %}</div>
+
+             <div class="tab_data" id="books">          
+            {% for cb in books %}
+                <a class="main_action_item" href='/book/{{cb.key}}'>{{cb.title}}</a>
+            {% endfor %}</div>
+
+            <div class="tab_data" id="professors">
+            {% for userclass in userclasses %}
+              {% for uc in userclass %}
+                {% ifequal uc.user_id.level 2 %}
+                <div class="main_action_item"><a href='/class/{{uc.section_id.key}}'>{{uc.section_id.class_id.name}}</a>:
+                <a href='/user/{{uc.user_id.key}}'>{{uc.user_id.name}}</a></div>
+                {% endifequal %}
+              {% endfor %}
+            {% endfor %}
+            </div>
+
+            <div class="tab_data" id="classmates">
+            {% for userclass in userclasses %}
+              {% for uc in userclass %}
+                {% ifnotequal uc.user_id.level 2 %}
+                <div class="main_action_item"><a href='/class/{{uc.section_id.key}}'>{{uc.section_id.class_id.name}}</a>:
+                <a href='/user/{{uc.user_id.key}}'>{{uc.user_id.name}}</a></div>
+                {% endifnotequal %}
+              {% endfor %}
+            {% endfor %}
+            </div>
+       </div>
+    </body>
+</html>
+

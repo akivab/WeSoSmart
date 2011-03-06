@@ -1,0 +1,36 @@
+{% if signed_in %}
+<!-- div header -->
+<div class="header">
+    <div class="header_top">
+        {% if not is_homepage %}
+        <div class="header_top_div" id="logo"><a href="/"><img src="/img/small_logo.png" /></a></div>
+        {% endif %}
+        <div id="others">
+        <div class="header_top_div" id="profile"><a class="act" href="/profile">Profile</a></div>
+        <div class="header_top_div" id="messages"><a class="act" href="/messages">Messages</a></div>
+        <div class="header_top_div" id="book_act"><a class="act" href='/find'>Find Books</a></div>
+        <div class="header_top_div" id="options"><a class="act" href='/logout'>Logout</a></div>
+       </div>
+    </div>
+</div>
+{% else %}
+<!-- div header -->
+<div class="header">
+    <div class="header_top_small">
+        {% if not is_homepage %}
+        <div class="header_top_div" id="logo"><a href="/"><img src="/img/small_logo.png" /></a><div id = "search_for_book">Search for book!</div></div>
+        {% endif %}
+    {% if is_homepage %}
+<!-- AddThis Button BEGIN -->
+            <div style='position: absolute; top: 10px;' class="addthis_toolbox addthis_default_style">
+            <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+            </div>
+            <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4d22b39f23550e61"></script>
+            <!-- AddThis Button END -->
+{% endif %}
+        <div class="header_top_right_div"><a class="thickbox" href="/login?KeepThis=true&TB_iframe=true&height=300&width=475">Login</a></div>
+        <div class="header_top_right_div"><a class="thickbox" href="/signup?KeepThis=true&TB_iframe=true&height=450&width=475">Signup</a></div>
+        <div class="header_top_right_div"><a href='/about'>About</a></div>
+    </div>
+</div>
+{% endif %}

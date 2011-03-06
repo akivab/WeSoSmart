@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/2/trunk/booksite/src/controller
+END
+user_management.py
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/5/trunk/booksite/src/controller/user_management.py
+END
+cookies.py
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/!svn/ver/5/trunk/booksite/src/controller/cookies.py
+END
+user_management.pyc
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/!svn/ver/5/trunk/booksite/src/controller/user_management.pyc
+END
+user_actions.py
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/5/trunk/booksite/src/controller/user_actions.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/2/trunk/booksite/src/controller/__init__.py
+END
+cookies.pyc
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/!svn/ver/5/trunk/booksite/src/controller/cookies.pyc
+END
+send_email.py
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/5/trunk/booksite/src/controller/send_email.py
+END
+exceptions.py
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/5/trunk/booksite/src/controller/exceptions.py
+END
+__init__.pyc
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/4/trunk/booksite/src/controller/__init__.pyc
+END
+controller.py
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/5/trunk/booksite/src/controller/controller.py
+END
+send_email.pyc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/5/trunk/booksite/src/controller/send_email.pyc
+END
+exceptions.pyc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/5/trunk/booksite/src/controller/exceptions.pyc
+END
+controller.pyc
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/5/trunk/booksite/src/controller/controller.pyc
+END

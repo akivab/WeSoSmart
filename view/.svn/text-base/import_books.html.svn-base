@@ -1,0 +1,22 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        <title>Find Books Faster</title>
+        <link rel="stylesheet" type="text/css" href="/css/booksite.css">
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+            <div class="finding_books">
+            <div class="description">Import</div>
+            <div class="import_books">Import Books<br />
+                <textarea id="book_import_area"></textarea>
+                <button id="submit_book_options">Submit</button>
+            </div>
+            </div>
+        </div>
+      <div>
+</div>

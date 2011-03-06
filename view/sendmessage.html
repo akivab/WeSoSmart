@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+    <head>
+    {% include "scripts.html" %}
+    </head>
+    <body>
+        <div id="formp">Send Message</div>
+        <form id="smallform" method="post" action="/sendmessage">
+            <label for="to">To:
+            <input disabled=1 name="email_to" type="text" id="to" maxlength="64" value="{{to}}"/><small>&nbsp;</small></label>
+            <input type='hidden' name="to" value="{{email}}" />
+            <div style='display: inline; font-size:12px' id='character_count'>500</div> char left
+            <label for="message">Message:
+            <textarea tabindex=1 name="message" cols=40 rows=8 id="message"></textarea></label>
+            <input style='clear:both'
+            type="submit" 
+            name="button"
+            tabindex=2
+            id="submitlogin" 
+            value="Send" /> 
+           <input type="submit" id="cancel" value="Cancel" onClick="parent.tb_remove(); return false;" /> 
+	    </form>
+	</body> 
+</html>
+    

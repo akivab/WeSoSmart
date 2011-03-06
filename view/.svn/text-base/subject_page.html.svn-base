@@ -1,0 +1,43 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+
+        <!-- div main -->
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+            <div class="description">{{title}}</div>
+            {% if is_user %} {% include "user_main.html" %} {% endif %}
+            {% if is_book %} {% include "book_main.html" %} {% endif %}
+            {% if is_class %} {% include "class_main.html" %} {% endif %}
+                    <div class="bottom_main">
+                         <div id="comments">
+                         Main Comments
+                         </div>
+                        {{comments}}
+                        <div>
+                        {% if signed_in %}
+                        <form id='commentform' action='/comment' method='post'>
+                            <textarea id="commenttext" rows="5" cols="40" name='comment_text'></textarea>
+                            <input name='comment_submit' type='submit' value='Comment'>
+                        </form>
+                        {% else %}
+                        Please sign in.
+                        {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="lower_main_recommendations">Recommendations
+                    <div id="recommendations_list"></div>
+                </div>
+            </div>
+        </div>
+
+        {% include "footer.html" %}
+    </div>
+</div>
+

@@ -1,0 +1,26 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+
+        <!-- div main -->
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+            <div class="description">{{title}}</div>
+            {{length}} messages.
+            {% for match in messages %}
+            <div> {{match.userbook_id.user_id.name}} 
+                    {% ifequal match.userbook_id.status 0 %} has {% else %} wants {% endifequal %}
+                    {{match.userbook_id.book_id.title}}
+                    {% if match.userbook_id.price %} for {{ match.userbook_id.sprice }} {% endif %}
+            </div>
+            {% endfor %}
+            </div>
+       </div>
+    </body>
+</html>
+

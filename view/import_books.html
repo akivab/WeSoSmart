@@ -1,0 +1,35 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        <title>Find Books Faster</title>
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+            <div class="finding_books">
+            <div class="description">Import</div>
+            <div class="import_books"><ol><li>1. Go to <a target="_blank" href="http://courseworks.columbia.edu">Courseworks</a></li><li>2. Click "Past Courses" for past courses</li><li>3. Copy all</li><li>4. Paste all below and Submit!</li></ol>
+                <form action='/import' method='post'>
+                <textarea name="book_import" id="book_import_area"></textarea>
+                <input type="submit" id="submit_book_options" />
+                </form>
+            </div>
+            </div>
+       <div class="lower_main_recommendations">
+            <h3>Recent comments</h3>
+                {%if signed_in%}
+            {% for i in recent_comments %}
+               <div class="recommendations_item">
+                <a target='_blank' href='/user/{{i.user_id.key}}'>{{i.user_id.name}}</a> commented on <a target="_blank"  href='/{{i.subject_type}}/{{i.subject_id.key}}'>{{i.subject_id.name}}</a> saying: <div class='someone_comment'>{{i.comment}}</div>
+               </div>
+            {% endfor %}
+        {%else%}<div style='color:red'>Sign in to see comments</div>{%endif%}
+        </div>
+
+        </div>
+        {% include "footer.html" %}
+      </body>
+</html>

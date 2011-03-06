@@ -1,0 +1,6 @@
+<!doctype html>
+<html>
+<head>{%include "scripts.html" %}</head>
+<body onload="setTimeout(function(){s = parent;  parent.tb_remove(); if(s != this){s.location.reload(1);} else{ location.href='/'}},1000); ">
+ <div class="description" style="position:relative; left: 50px; top: 50px; width: 300px;  color:red; ">Please try again.</div>
+</body>

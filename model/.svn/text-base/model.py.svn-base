@@ -1,0 +1,164 @@
+import re
+from google.appengine.ext import db
+from google.appengine.ext.db import polymodel
+
+class Callable:
+    def __init__(self, anycallable):
+        self.__call__ = anycallable
+        
+class Picture(db.Model):
+    data = db.BlobProperty()
+    link = db.StringProperty()
+
+class Subject(polymodel.PolyModel):
+    name = db.StringProperty()
+    description = db.StringProperty()
+    picture = db.ReferenceProperty(Picture)
+    time = db.DateTimeProperty(auto_now_add=True)
+    def getPictureLink(self):
+        if self.picture:
+            return self.picture.link
+
+class User(Subject):
+    cubmail = db.EmailProperty()
+    nick = db.StringProperty()
+    email = db.EmailProperty()
+    # level is 0 upon first registering.
+    # level is 1 for those who want greatest privacy
+    # level is 2 for those who want greatest publicity (and professors)
+    level = db.IntegerProperty()
+    password = db.StringProperty()
+    def getData(self):
+        data = []
+        data.append(("h2 class='head'", "Professor" if self.level==2 else "Student"))
+        data.append(("a href='mailto:"+self.cubmail+"'", self.cubmail))
+        return data
+    def __str__(self):
+        return str(self.getData())
+
+class Sessions(db.Model):
+    hash = db.StringProperty()
+    ip = db.StringProperty()
+    user = db.ReferenceProperty(User)
+    time = db.DateTimeProperty(auto_now_add=True)    
+    
+class Class(Subject):
+    dept = db.StringProperty()
+    dept_name = db.StringProperty()
+    division = db.StringProperty()
+    open_to = db.StringProperty()
+    campus = db.StringProperty()
+    type = db.StringProperty()
+    points = db.StringProperty()
+    max_points = db.IntegerProperty()
+    number = db.StringProperty()
+
+class Section(Class):
+    semester = db.StringProperty()
+    section = db.StringProperty()
+    call_num = db.StringProperty() 
+    location = db.StringProperty()
+    class_time = db.StringProperty()
+    approvals = db.StringProperty()
+    instructor = db.StringProperty()
+    section_key = db.StringProperty()
+    note = db.StringProperty()
+    class_id = db.ReferenceProperty(Class)
+
+class Book(Subject):
+    isbn = db.StringProperty()
+    title = db.StringProperty()
+    author = db.StringProperty()
+    price = db.FloatProperty()
+    prev = db.StringProperty()
+    def getData(self):
+        data = []
+        data.append(("h3", self.author))
+        data.append(("h4", self.description))
+        data.append(("h4", "ISBN: %s"%self.isbn))
+        data.append(("a href='%s'"%self.prev, "preview"))
+        if self.price:
+            data.append(("br", "$%.2f"%self.price)) 
+        return data
+    def __str__(self):
+        return str(self.getData())
+    
+class UserBooks(db.Model):
+    user_id = db.ReferenceProperty(User)
+    book_id = db.ReferenceProperty(Book)
+    status = db.IntegerProperty()
+    price = db.FloatProperty()
+    time = db.DateTimeProperty(auto_now_add=True)
+    def getData(self):
+        data = self.user_id.getData()
+        data.extend(self.book_id.getData())
+        data.append(("picture", self.book_id.getPictureLink()))
+        data.append(("status", str("want" if self.status == 0 else "have")))
+        if self.price:
+            data.append(("offered at", "$%.2f"%self.price))
+        return data
+    
+    def getForHomepage(self):
+        name = self.user_id.name
+        m=re.match(r'^(\S+)',name)
+        if m:
+            name = m.group(1)
+        data = (self.book_id.getPictureLink(), "/user/"+str(self.user_id.key()), name,  
+                str("wants" if self.status == 0 else "has"), "/book/"+str(self.book_id.key()),
+                self.book_id.title, "for $%.2f" if self.price else "")
+        return "<div class='recent_activity_item'><img src='%s' /><div class='recent_activity_text'><a href='%s'>%s</a> %s <a href='%s'>%s</a> %s</div></div>" % data
+    
+    def getRecent(self):
+        recent = UserBooks.all()
+        recent.order('-time')
+        
+        toreturn = [i.getForHomepage() for i in recent[:20]]
+        if len(toreturn) < 10:
+            toreturn.extend(toreturn)
+        return toreturn
+    def getUsers(book, status):
+        return [i.user_id for i in UserBooks.gql("WHERE book_id=:1 AND status=:2", book,status)]
+    def __str__(self):
+        return str(users) + str(self.getData())               
+    getUsers = Callable(getUsers)         
+    
+class ClassBooks(db.Model):
+    section_id = db.ReferenceProperty(Section)
+    book_id = db.ReferenceProperty(Book)
+    req = db.StringProperty()
+
+
+class UserClasses(db.Model):
+    STUDENT, PROFESSOR = range(2)
+    user_id = db.ReferenceProperty(User)
+    section_id = db.ReferenceProperty(Section)
+    relationship = db.IntegerProperty()
+    grade = db.StringProperty()
+    
+class UserUsers(db.Model):
+    user_id = db.ReferenceProperty(User)
+    userbook_id = db.ReferenceProperty(UserBooks)
+    message = db.StringProperty()
+        
+    
+class Comment(Subject):
+    user_id = db.ReferenceProperty(User)
+    subject_id = db.ReferenceProperty(Subject)
+    comment = db.StringProperty()
+    depth = db.IntegerProperty()
+    def addComment(self, user, subject, comment):
+        newcomment = Comment(user_id=user,subject_id=subject, comment=comment)
+        newcomment.put()
+        
+    def getComments(subject_id):
+        comments = Comment.gql("WHERE subject_id = :1 ORDER BY time DESC", subject_id)
+        toReturn = []
+        for comment in comments:
+            toReturn.append(comment)
+            replies = Comment.getComments(comment)
+            for i in replies:
+                i.depth = (comment.depth if comment.depth else 0) + 1
+                i.put()
+            toReturn.extend(replies)
+        return toReturn
+    getComments = Callable(getComments)

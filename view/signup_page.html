@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+
+        <!-- div main -->
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+        {% if signed_in %}<p class="mainp">You appear to already be signed in. <a href="/find">Go play!</a></p>{%else%}
+        <p class="mainp">To access all the features of WeSoSmart, you will need to log in or <a class="thickbox" href="/signup?KeepThis=true&TB_iframe=true&height=450&width=475">signup</a>.</p>
+         <div class="main_form">
+        <div id="formp">Login</div>
+        <form id="smallform" method="post" action="/login" onsubmit="do_submit();">
+            <label for="user_email">UNI or cubmail address:
+            <input name="user[email]" type="text" id="user_email" maxlength="64" /><small>&nbsp;</small></label>
+            <input type='hidden' name="user[key2]" id="user_key2" value=""/>
+            <input type='hidden' name="redirect" id="redirect" value="{{redirect}}"/>
+	        <label for="user_password">Password:
+	        <input name="user[password]" type="password" id="user_password" maxlength="32" /><small>&nbsp;</small></label> 
+            <input
+            type="submit" 
+            name="button"
+            tabindex=3
+            id="submitlogin" 
+            value="Login" /> 
+           <input type="submit" id="cancel" value="Cancel" onClick="parent.tb_remove(); return false;" /> 
+	    </form>
+        </div>
+        {%endif%}
+
+        {% include "footer.html" %}
+    </body>
+</html>
+

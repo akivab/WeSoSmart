@@ -1,0 +1,60 @@
+<div class="top_main">
+    <div id="top_main_image">
+        <img id="main_image" src="{{picture}}" />
+    </div>
+    <div id="top_main_description">
+        <h3>{{description.class_id.dept}} {{description.class_id.number}}</h3>
+        <h4>Location: {{description.location}} </h4>
+        <h4>Time: {{description.class_time}} </h4>
+        <h3><a class='thickbox' href='/addClassBook?class={{description.key}}&KeepThis=true&TB_iframe=true&height=275&width=475'>Add a book!</a></h3>
+        <h3><a class='thickbox' onclick='enroll($(this))' href='/enroll?class={{description.key}}'>Enroll</a></h3>
+    </div>
+</div>
+<div class="lower_main">
+    <div class="lower_main_action">
+        <div id="middle_main_activity">
+            <a class="tab" alt="Check out more <a href='/find'>here</a>"
+                href="javascript:void(0);" onclick="change_tab($('#information'),$(this));">information</a>
+            <a class="tab" alt="<h3><a class='thickbox' href='javascript: tb_show(null, &quot;/addClassBook?class={{description.key}}&KeepThis=true&TB_iframe=true&height=275&width=475&quot;, null)'>Add a book!</a></h3>" 
+                href="javascript:void(0);" onclick="change_tab($('#classbooks'),$(this));">books</a>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#professors'),$(this));">professors</a>
+            <a class="tab" alt="Check out more <a href='/find'>here</a>" 
+                href="javascript:void(0);" onclick="change_tab($('#classmates'),$(this));">classmates</a>
+            <div id="tab_data"></div>
+            <div class="tab_data" id="information">
+            <div style="display: block">{{description.class_id.dept}} {{description.class_id.number}}</div>
+            <div style="display: block">Location: {{description.location}}</div>
+            <div style="display: block">Time: {{description.class_time}}</div>
+            <div style="display: block">Points: {{description.class_id.points}}</div>
+            {% if description.section %}<div style="display: block">Section: {{description.section}}</div>{%endif%}
+            {% if description.approvals %}<div style="display: block">Approvals: {{description.approvals}}</div>{%endif%}
+            {% if description.instructor %}<div style="display: block">Instructor: {{description.instructor}}</div>{%endif%}
+            {% if description.class_id.type %}<div style="display: block">Type: {{description.class_id.type}}</div>{%endif%}
+            {% if description.class_id.open_to %}<div style="display: block">Open to: {{description.class_id.open_to}}</div>{%endif%}
+            {% if description.class_id.campus %}<div style="display: block">Campus: {{description.class_id.campus}}</div>{%endif%}
+            <div style="display: block">Call number: {{description.call_num}}</div>
+            {%if description.note%}<div style="display: block">{{description.note}}</div>{%endif%}
+            <a href='http://courseworks.columbia.edu/public/{{description.section_key}}'>Website</a>
+            </div>
+            <div class="tab_data" id="classbooks">
+            {% for classbook in classbooks %}
+            <div id='tmp'></div>
+            <script>$('#tmp').replaceWith(get_book_code('{{classbook.book_id.picture.link}}', '{{classbook.book_id.prev}}', '{{classbook.book_id.title}}', '{{classbook.book_id.author}}', '{{classbook.book_id.description}}', '{{classbook.book_id.price}}', '{{classbook.book_id.key}}',1))</script>
+            {% endfor %}
+            </div>
+            <div class="tab_data" id="professors">
+            {% for userclass in userclasses %}
+            {% ifequal userclass.user_id.level 2 %}
+            <a style="display: block" href='/user/{{userclass.user_id.key}}'>{{userclass.user_id.name}}</a>
+            {% endifequal%}
+            {% endfor %}
+            </div>
+            <div class="tab_data"  id="classmates">
+            {% for userclass in userclasses %}
+            {% ifnotequal userclass.user_id.level 2 %}
+            <a style="display: block" href='/user/{{userclass.user_id.key}}'>{{userclass.user_id.name}}</a>
+            {% endifnotequal%}
+            {% endfor %}
+            </div>
+        </div>

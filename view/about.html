@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- Django style -->
+<html>
+    <head>
+        {% include "scripts.html" %}
+    </head>
+
+    <body>
+        {% include "header.html" %}
+
+        <!-- div main -->
+       <div class="main" {% if signed_in %} id="subject_main" {% endif %}>
+            <div class="description">About</div>
+                <div class="about">
+                <p>Welcome to WeSoSmart, a site built to help Columbia students trade textbooks more easily.</p>
+                
+                <p>This is a place to look for classes, enroll in those you are interested in, and find those books required for your classes.</p>
+
+                <p>To get started, you don't even need an account. Simply go to <a target="_blank" href="/find">find books</a> or <a target='_blank'
+                    href = "/import">list your old ones</a>.</p>
+
+                <p>To get the full experience out of WeSoSmart, sign up for an account. With this, you can save courses you're interested in,
+                    message classmates with questions, leave comments on courses, and list books for others to see.</p>
+
+                <p>If you sign up, you can list books as "wanted" or "had" and <b>you will receive updates when they appear</b>. Also, if you
+                      cannot find your book, you can go to your course and add the ISBN (by clicking "Add Book"). When an ISBN is registered,
+                      it will be seen by everybody from there on in. Finally, all books listed are taken directly from courseworks, so there
+                      is much less work to be done by you.</p>
+                </div>
+            </div>
+        </div>
+
+        {% include "footer.html" %}
+    </body>
+</html>
+

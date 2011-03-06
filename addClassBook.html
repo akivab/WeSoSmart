@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+    <head>
+     <link rel="stylesheet" type="text/css" href="/css/booksite.css">
+    </head>
+    <body>
+        <div id="formp">Add Book</div>
+        <form id="smallform" method="post" onSubmit="/addClassBook">
+
+            <label for="isbn">ISBN:
+            <input tabindex=1 name="isbn" type="text" id="isbn" maxlength="64" /><small>&nbsp;</small></label>
+            <label for="price">Price ($):
+            <input tabindex=1 name="price" type="text" id="price" value='100.00' maxlength="64" /><small>Enter the price</small></label>
+            <input name="class" type="hidden" id="class" value="{{class}}"/>
+            <input
+            type="submit" 
+            name="button" 
+            tabindex=3
+            id="submitlogin" 
+            value="Add" /> 
+           <input type="submit" id="cancel" value="Cancel" onClick="parent.tb_remove(); return false;" /> 
+	    </form>
+
+    </body>
+</html>

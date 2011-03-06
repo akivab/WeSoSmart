@@ -1,0 +1,74 @@
+<!doctype html>
+<!-- 
+    Hi! Thanks for checking out the source code.
+     
+    If you're near Columbia, let's grab coffee.
+ -->
+<html>
+    <head>
+        {% include "scripts.html" %}
+    </head>
+
+    <body style='overflow: auto'>
+        {% include "header.html" %}
+        <!-- div main -->
+        <div class = "main" id = "welcome">
+            <div class = "left_welcome">
+                <div id = "logo_big"><div id="logo_text">Swap or trade textbooks with Columbia classmates</div></div>
+                <a style='background: #F2F2F2; position: relative; top:-10px; padding: 5px' href="/recent_listings">See more recent listings</a>
+                <div id = "recent_activity">
+                {% for i in recent_activity %}
+                {{i}}
+                {% endfor %}
+                </div>                
+            </div>
+            <div class = "right_welcome">
+                <div class="search-box">
+                <form method="get" action="/search">
+                <input disabled=1 type="text" size="15" class="search-field" name="s" id="s" value="Search books" 
+                    onfocus="if(this.value == 'Search books') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Search books';}"
+                />
+                <input type="submit"  value="Go" class="search-go" />
+                </form></div>
+                <div id = "big_picture"><!--<div class='description' style='text-align: center; position: relative; top: 50px; padding: 50px; background-color: rgba(255,255,255,.7);'>Celebrating 100+ members!</div>--></div>
+                <div class = "browse_and_try">
+                    <a class = "welcome_browse" href='/find'>Find<br />books</a>
+                    <a class= "welcome_try" href='http://bit.ly/faMN81'>Plan a schedule</a>
+                    <a class = "welcome_signup" href="javascript:tb_show(null,'/signup?KeepThis=true&TB_iframe=true&height=450&width=475',null);">Signup</a
+                </div>
+            </div>
+        </div>
+<script type="text/javascript" charset="utf-8">
+  var is_ssl = ("https:" == document.location.protocol);
+  var asset_host = is_ssl ? "https://s3.amazonaws.com/getsatisfaction.com/" : "http://s3.amazonaws.com/getsatisfaction.com/";
+  document.write(unescape("%3Cscript src='" + asset_host + "javascripts/feedback-v2.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript" charset="utf-8">
+  var feedback_widget_options = {};
+
+  feedback_widget_options.display = "overlay";  
+  feedback_widget_options.company = "wesosmart";
+  feedback_widget_options.placement = "left";
+  feedback_widget_options.color = "#222";
+  feedback_widget_options.style = "idea";
+
+  var feedback_widget = new GSFN.feedback_widget(feedback_widget_options);
+</script>
+<!-- begin olark code --> <script type='text/javascript'>/*<![CDATA[*/ window.olark||(function(k){var g=window,j=document,a=g.location.protocol=="https:"?"https:":"http:",i=k.name,b="load",h="addEventListener";(function(){g[i]=function(){(c.s=c.s||[]).push(arguments)};var c=g[i]._={},f=k.methods.length;while(f--){(function(l){g[i][l]=function(){g[i]("call",l,arguments)}})(k.methods[f])}c.l=k.loader;c.i=arguments.callee;c.p={0:+new Date};c.P=function(l){c.p[l]=new Date-c.p[0]};function e(){c.P(b);g[i](b)}g[h]?g[h](b,e,false):g.attachEvent("on"+b,e);c.P(1);var d=j.createElement("script"),m=document.getElementsByTagName("script")[0];d.type="text/javascript";d.async=true;d.src=a+"//"+c.l;m.parentNode.insertBefore(d,m);c.P(2)})()})({loader:(function(a){return "static.olark.com/jsclient/loader1.js?ts="+(a?a[1]:(+new Date))})(document.cookie.match(/olarkld=([0-9]+)/)),name:"olark",methods:["configure","extend","declare","identify"]}); olark.identify('7529-156-10-5411');/*]]>*/</script> <!-- end olark code -->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20763901-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+    </body>
+</html>
+
