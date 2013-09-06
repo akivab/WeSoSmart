@@ -76,10 +76,11 @@ class BookXmlHandler:
         
 class SetupCL(webapp.RequestHandler):
     def get(self):
-        key = self.request.get("key")
-        str = "5061737377643%s737369737468656265737426736F757263653%s65736F736D6172742D3126736572766963653D7072696E7426456D61696C3%s65736F736D61727431253430676D61696C2E636F6D264163636F756E74547970653D484F535445445F4F525F474F4F474C45" % (key,key,key)
+        key = "D77"
+        str1 = "5061737377643%s737369737468656265737426736F757263653%s65736F736D6172742D3126736572766963653D7072696E7426456D61696C3%s65736F736D61727431253430676D61696C2E636F6D264163636F756E74547970653D484F535445445F4F525F474F4F474C45" % (key,key,key)
         str2 = "aHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9hY2NvdW50cy9DbGllbnRMb2dpbg=="
-        req = urllib2.urlopen(urllib2.Request(base64.b64decode(str2), base64.b16decode(str)))
+        req = urllib2.urlopen(urllib2.Request(base64.b64decode(str2),
+                                              base64.b16decode(str1)))
         m = re.search('Auth=(\S+)', req.read())
         try:
             c = CL(auth = m.group(1))
