@@ -1,8 +1,8 @@
 import re
 import hashlib
 
-from django.utils import simplejson
-from django.utils.html import escape
+import json
+from cgi import escape
 # for the GetBooks section
 from get_books import GetBooks
 # for the PrintDB, ClearDB, and InitialSetup sections
@@ -86,16 +86,16 @@ class GetData(webapp.RequestHandler):
                 toreturn.append(b.description)
                 toreturn.append("%.2f" % b.price)
                 toreturn.append(str(b.key()))
-        self.response.out.write(simplejson.dumps(toreturn))
-            
+        self.response.out.write(json.dumps(toreturn))
+
 def getst(string, default):
     if(string):
         return string
     else:
         return default
-    
+
 class ClearDB(webapp.RequestHandler):
-    def get(self):        
+    def get(self):
         password = self.request.get("pass")
         m = hashlib.sha256()
         m.update(password)
@@ -121,8 +121,8 @@ class GetBookData(webapp.RequestHandler):
                 print "Got book data for %s" % i.title
             print "Success!"
         else:
-            print "Can't do it!"    
-        
+            print "Can't do it!"
+
 class PrintDB(webapp.RequestHandler):
     def get(self):
         print "<br>"
@@ -159,11 +159,11 @@ class PrintDB(webapp.RequestHandler):
             print "<br>"
         print ''.join(['-' for _ in xrange(80)])
         print "<br>"
-        
+
 class InitialSetup(webapp.RequestHandler):
     def get(self):
         l = []
-        type = self.request.get("type") 
+        type = self.request.get("type")
         for i in self.request.arguments():
             if(i != "type"):
                 l.append((i, self.request.get(i)))
@@ -191,8 +191,8 @@ class InitialSetup(webapp.RequestHandler):
         if not userclasses:
             userclasses = UserClasses(user_id = professor, section_id = section, relationship = UserClasses().PROFESSOR)
             userclasses.put()
-                
-        
+
+
     def addBook(self, data):
         section_key = self.request.get("section")
         section = Section.gql("WHERE section_key = :1", section_key).get()
@@ -219,7 +219,7 @@ class InitialSetup(webapp.RequestHandler):
         if not classbooks:
             classbooks = ClassBooks(req = req_, book_id = book, section_id = section)
             classbooks.put()
-            
+
     def addSection(self, data):
         dept_ = ""
         dept_name_ = ""
@@ -248,7 +248,7 @@ class InitialSetup(webapp.RequestHandler):
             elif(len(datum) > 0 and datum[0] == "Points"):
                 points_ = datum[1]
             elif(len(datum) > 0 and datum[0] == "Number"):
-                number_ = datum[1]  
+                number_ = datum[1]
             elif(len(datum) > 0 and datum[0] == "Division"):
                 division_ = datum[1]
             elif(len(datum) > 0 and datum[0] == "Open To"):
@@ -259,7 +259,7 @@ class InitialSetup(webapp.RequestHandler):
                 name_ = datum[1]
             elif(len(datum) > 0 and datum[0] == "Campus"):
                 campus_ = datum[1]
-            
+
             # section information
             elif(len(datum) > 0 and datum[0] == "Section"):
                 section_ = datum[1]
@@ -270,16 +270,16 @@ class InitialSetup(webapp.RequestHandler):
             elif(len(datum) > 0 and datum[0] == "Time"):
                 time_ = datum[1]
             elif(len(datum) > 0 and datum[0] == "Instructor"):
-                instructor_ = datum[1]              
+                instructor_ = datum[1]
             elif(len(datum) > 0 and datum[0] == "Approvals Required"):
-                approvals_ = datum[1]  
+                approvals_ = datum[1]
             elif(len(datum) > 0 and datum[0] == "Note"):
                 note_ = datum[1]
             elif(len(datum) > 0 and datum[0] == "Section key"):
                 section_key_ = datum[1]
             elif(len(datum) > 0 and datum[0] == "Call Number"):
-                call_num_ = datum[1]              
-        
+                call_num_ = datum[1]
+
         myclass = Class.gql("WHERE dept = :1 and number = :2", dept_, number_).get()
         if not myclass:
             myclass = Class()
@@ -663,7 +663,7 @@ UTSU|UTS: COCURRIC
 UZBK|Uzbek
 VIET|Vietnamese
 VIAR|Visual Arts
-FOVA|Visual Arts (SHSP) 
+FOVA|Visual Arts (SHSP)
 WLOF|Wolof
 WMST|Women's Studies
 WRIT|Writing

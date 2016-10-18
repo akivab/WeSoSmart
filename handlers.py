@@ -11,8 +11,8 @@ from controller.controller import getSections
 from model.model import *
 
 from controller.user_management import UserManagement
-from django.utils.html import escape
-from django.utils import simplejson
+from cgi import escape
+import json as simplejson
 from google.appengine.ext import db
 from google.appengine.ext.db import Key
 from google.appengine.ext.webapp import template
@@ -24,7 +24,7 @@ class Handler(webapp.RequestHandler):
             self.request = handler.request
             self.response = handler.response
             self.template_values= template_values
-    
+
 class CommentHandler(Handler):
     def post(self):
         user = UserManagement(self).getUser()
@@ -37,7 +37,7 @@ class CommentHandler(Handler):
         file = self.request.get("file")
         Comment.addComment(user, Key(subject), self.request.get("subject_type"), comment,file)
         self.redirect("/"+self.request.get("subject_type")+"/"+orig)
-        
+
 class SectionHandler(Handler):
     def get(self):
         sections = [db.get(Key(i)) for i in self.request.get("keys").split(",")]
@@ -46,7 +46,7 @@ class SectionHandler(Handler):
         self.template_values['classes']= classes
         self.template_values['sections']= sections
         self.response.out.write(render_template(self.template_values, page))
-        
+
 class PriceHandler(Handler):
     def post(self):
         id = db.get(Key(self.request.get("id")))
@@ -69,7 +69,7 @@ class SendHandler(Handler):
                     tmp = UserUsers(user_id = user_from, level=1,
                               message = "Sent to <a href='http://www.wesosmart.com/user/%s'>%s</a>: %s"%(str(user_to.key()), user_to.name,  email))
                     tmp.put()
-                    tmp = UserUsers(user_id = user_to, level=1, 
+                    tmp = UserUsers(user_id = user_to, level=1,
                               message = "Sent from <a href='http://www.wesosmart.com/user/%s'>%s</a>: %s"%(str(user_from.key()), user_from.name, email))
                     tmp.put()
                     SendEmail().sendDirect(user_to.name, user_to.cubmail, str(user_from.key()), user_from.name, user_from.cubmail,email)
@@ -78,7 +78,7 @@ class SendHandler(Handler):
         except Exception, e:
             SendEmail().sendDirect("Wise Wizard", "akiva.bamberger@gmail.com", "", "Anonymous", "Anonymous", email + " error "+str(e) + " to "+self.request.get("to"))
         self.response.out.write(render_template(None, "view/complete.html"))
-        
+
     def get(self):
         user_to = self.request.get("id")
         if user_to == "thewizard":
@@ -121,7 +121,7 @@ class ImportHandler(Handler):
         page = "view/import_books.html"
         self.template_values['title']="Import"
         self.response.out.write(render_template(self.template_values, page))
-        
+
     def post(self):
         classn = []
         sections = []
@@ -136,7 +136,7 @@ class ImportHandler(Handler):
         self.template_values['classes']= classn
         self.template_values['sections']= sections
         self.response.out.write(render_template(self.template_values, page))
-        
+
 class ClassHandler(Handler):
     def post(self):
         classn = Class.get(Key(self.request.get("class")))
@@ -154,14 +154,14 @@ class ClassHandler(Handler):
                         GetBooks().setBookInfo(i)
                     books.append([i.picture.link, i.prev, i.title, i.author, i.description, "%.2f"%i.price, str(i.key())])
         self.response.out.write(simplejson.dumps(books))
-                        
+
 class KeyHandler(Handler):
     def get_info(self):
         results = memcache.get("results")
         if results is not None:
             return results
         else:
-            results = self.render_info()    
+            results = self.render_info()
             if not memcache.add("results", results,86400):
                 logging.error("Memcache set failed.")
             return results
@@ -169,7 +169,7 @@ class KeyHandler(Handler):
     def render_info(self):
         results = Subject.gql("WHERE class = 'Book'")
         return simplejson.dumps([i.name[:60] if i.name else "" for i in results])
-    
+
     def post(self):
         self.response.out.write(self.get_info())
     def get(self):
@@ -183,7 +183,7 @@ class KeyHandler(Handler):
             self.redirect("/book/%s"%str(subject.key()))
         else:
             self.redirect("/")
-                        
+
 class SubjectHandler(webapp.RequestHandler):
     def __init__(self, handler=None, template_values=None):
         if handler:
@@ -194,7 +194,7 @@ class SubjectHandler(webapp.RequestHandler):
             self.template_values['random'] = random.randrange(1,8)
             self.template_values['uk']= self.template_values['um'].getUser()
             self.page = "view/subject_page.html"
-    
+
     def getUser(self, user):
         if user.level < 2 and not self.template_values['signed_in']:
             self.redirect('/signup_page?redirect=%s'%self.request.url)
@@ -207,7 +207,7 @@ class SubjectHandler(webapp.RequestHandler):
         if user.level != 2:
             self.template_values['newb'] = True
         self.template_values['pro'] = (user.cubmail == "ion2101@columbia.edu"
-                                       or user.cubmail == "ab2928@columbia.edu" 
+                                       or user.cubmail == "ab2928@columbia.edu"
                                        or user.cubmail == "ebw2115@columbia.edu"
                                        or user.cubmail == "rab2172@columbia.edu")
         self.template_values['is_user'] = True
@@ -215,7 +215,7 @@ class SubjectHandler(webapp.RequestHandler):
         self.template_values['book_want_list'] = UserBooks.gql("WHERE user_id=:1 AND status=:2",user,0)
         self.template_values['book_have_list'] = UserBooks.gql("WHERE user_id=:1 AND status=:2",user,1)
         self.response.out.write(render_template(self.template_values, self.page))
-    
+
     def getClass(self, section):
         if not section.name:
             section.name = section.class_id.name
@@ -225,13 +225,13 @@ class SubjectHandler(webapp.RequestHandler):
         else:
             self.template_values['picture']=section.picture.link
         self.template_values['is_class'] = True
-        self.template_values['classbooks'] = ClassBooks.gql("WHERE section_id=:1",section) 
+        self.template_values['classbooks'] = ClassBooks.gql("WHERE section_id=:1",section)
         self.template_values['userclasses'] = UserClasses.gql("WHERE section_id=:1",section)
-        self.template_values['title']="%s (%s %s)"%(section.name, 
+        self.template_values['title']="%s (%s %s)"%(section.name,
                                                     ("Spring" if section.semester[-2:-1]=="1" else "Summer" if section.semester[-2:-1]=="2" else "Fall"),
                                                      section.semester[:-1])
         self.response.out.write(render_template(self.template_values, self.page))
-    
+
     def getBook(self, book):
         if not book.name:
             book.name = book.title
@@ -255,10 +255,10 @@ class SubjectHandler(webapp.RequestHandler):
         self.template_values['wantcount'] = self.template_values['book_want_list'].count()
         self.template_values['havecount'] = self.template_values['book_have_list'].count()
         self.response.out.write(render_template(self.template_values, self.page))
-    
+
     def getComments(self, subject):
         return Comment.getComments(subject)
-    
+
     def get(self):
         m = re.match(r'/(book|user|class)/(.+)$', self.path)
         s = Subject.get(Key(m.group(2)))

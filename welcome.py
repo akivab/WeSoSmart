@@ -11,7 +11,7 @@ from controller.get_books import SetupCL
 from controller.get_books import GetBooks
 from handlers import *
 from model.model import *
-from django.utils.html import escape
+from cgi import escape
 from controller.user_management import UserManagement
 from controller.user_actions import UserAction
 from serve_img import GetImage
@@ -29,7 +29,7 @@ class MainPage(webapp.RequestHandler):
         user = um.getUser()
         signed_in = um.isLoggedIn()
         template_values = {'signed_in': signed_in, 'um':um}
-        template_values['recent_comments'] = Comment.getRecent()  
+        template_values['recent_comments'] = Comment.getRecent()
         if(re.match('/settings', self.request.path)):
             pic = self.request.get("user[picture]")
             try:
@@ -60,15 +60,15 @@ class MainPage(webapp.RequestHandler):
                 try:
                     obj = UserBooks.get(Key(id))
                 except Exception, e:
-                    obj = UserClasses.get(Key(id)) 
+                    obj = UserClasses.get(Key(id))
                 if obj and obj.user_id.key() == user.key():
-                    db.delete(obj) 
+                    db.delete(obj)
             except Exception, e:
                 pass
             print "success"
             return
         elif(re.match(r'/addClassBook',self.request.path)):
-        
+
             class_id = self.request.get("class")
             section_id = Section.get(Key(class_id))
             book_isbn = self.request.get("isbn")
@@ -87,7 +87,7 @@ class MainPage(webapp.RequestHandler):
                     classbook = ClassBooks(section_id = section_id, book_id = book, req = "Recommended")
                     classbook.put()
             self.redirect('/complete')
-            
+
         elif(re.match(r'/delete_comment',self.request.path)):
             user = UserManagement(self).getUser()
             c = Comment.get(self.request.get("c"))
@@ -96,7 +96,7 @@ class MainPage(webapp.RequestHandler):
         elif(re.match(r'/import',self.request.path)):
             ImportHandler(self, template_values).post()
             return
-        
+
     def get(self):
         render_template(None, 'view/footer.html')
         render_template(None, 'view/header.html')
@@ -104,9 +104,9 @@ class MainPage(webapp.RequestHandler):
         path = self.request.path;
         um = UserManagement(self)
         signed_in = um.isLoggedIn()
-        
+
         template_values = {'signed_in': signed_in, 'um':um}
-        template_values['recent_comments'] = Comment.getRecent()  
+        template_values['recent_comments'] = Comment.getRecent()
         page = "view/"
         if(path == "/"):
             page+="index.html"
@@ -140,7 +140,7 @@ class MainPage(webapp.RequestHandler):
         elif(re.match(r'/profile',path)):
             if(signed_in):
                 sh = SubjectHandler(self, template_values)
-                sh.path = '/user/'+str(um.getUser().key()) 
+                sh.path = '/user/'+str(um.getUser().key())
                 sh.template_values['profile'] = True
                 sh.get()
                 return
@@ -188,7 +188,7 @@ class MainPage(webapp.RequestHandler):
         except Exception, e:
             self.redirect("/signup_page?redirect=/&reason="+str(e))
 
-    
+
 
 apps_binding = []
 apps_binding.append(('/image', GetImage))

@@ -10,7 +10,7 @@ from model.model import Book
 from model.model import UserBooks
 from model.model import UserUsers
 
-from django.utils import simplejson
+import json as simplejson
 from user_management import UserManagement
 
 from google.appengine.ext.db import Key
@@ -32,7 +32,7 @@ class UserAction(webapp.RequestHandler):
         book_id = self.getBook(book)
         toreturn = self.setAction(book_id, self.WANT if status == "want" else self.HAVE, price)
         self.response.out.write(simplejson.dumps(toreturn))
-        
+
     # update a price or add a book/status
     def setAction(self, book, status, price=None):
         user = self.user
@@ -47,16 +47,16 @@ class UserAction(webapp.RequestHandler):
             ub.price = price
             ub.put()
         return [str(ub.key()), ub.price]
-    
+
     def sendMessages(self, ub):
         status = self.HAVE if ub.status == self.WANT else self.WANT
         for j in UserBooks.gql("WHERE book_id=:1 AND status=:2", ub.book_id, status):
             response = "match found"
             UserUsers.addMessage(j.user_id, ub, response)
             UserUsers.addMessage(ub.user_id, j, response)
-    
-    def getBook(self,book_str): 
+
+    def getBook(self,book_str):
         return Book.get(Key(book_str))
-    
+
     def getActions(self, book, status):
         ub = UserBooks.gql("WHERE status=:1 AND book_id=:2", status, book)
